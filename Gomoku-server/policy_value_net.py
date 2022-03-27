@@ -2,7 +2,7 @@
 """
 An implementation of the policyValueNet in Theano and Lasagne
 
-@author: Junxiao Song
+
 """
 
 from __future__ import print_function

@@ -3,7 +3,7 @@
 Monte Carlo Tree Search in AlphaGo Zero style, which uses a policy-value
 network to guide the tree search and evaluate the leaf nodes
 
-@author: Junxiao Song
+
 """
 
 import numpy as np
