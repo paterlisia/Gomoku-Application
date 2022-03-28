@@ -1,0 +1,2 @@
+model1_path: "/Users/joanna/alphazero_gomuku/Gomoku-Application/Gomoku-server/model/best_policy885.pth"
+model2_path: "/Users/joanna/alphazero_gomuku/Gomoku-Application/Gomoku-server/model/best_policy885_500.pth"
