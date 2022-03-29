@@ -1,1 +1,0 @@
-python Gomoku-server/human_play.py
