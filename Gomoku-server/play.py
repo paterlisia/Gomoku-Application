@@ -17,7 +17,9 @@ from policy_value_net_numpy import PolicyValueNetNumpy
 from PVPytorch.policy_value_net_pytorch import PolicyValueNet  # Pytorch
 # from policy_value_net_tensorflow import PolicyValueNet # Tensorflow
 # from PVKeras.policy_value_net_keras import PolicyValueNet  # Keras
+import os
 
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 class Human(object):
     """
@@ -50,7 +52,10 @@ class Human(object):
 def run():
     n = 5
     width, height = 8, 8
-    model_file = 'model/best_policy885.pth'
+    cwd = os.getcwd()  # Get the current working directory (cwd)
+    files = os.listdir(cwd)  # Get all the files in that directory
+    print("Files in %r: %s" % (cwd, files))
+    model_file = 'model/PytorchNet1500.pth'
     try:
         board = Board(width=width, height=height, n_in_row=n)
         game = Game(board)
@@ -59,7 +64,7 @@ def run():
         # load the trained policy_value_net with PyTorch
 
         best_policy = PolicyValueNet(width, height, model_file = model_file)
-        mcts_player = MCTSPlayer(best_policy.policy_value_fn, c_puct=5, n_playout=1000)
+        mcts_player = MCTSPlayer(best_policy.policy_value_fn, c_puct=5, n_playout=400)
 
         # load the provided model (trained in Theano/Lasagne) into a MCTS player written in pure numpy
         # try:
@@ -78,8 +83,8 @@ def run():
         # human player, input your move in the format: 2,3
         human = Human()
 
-        # set start_player=0 for human first
-        game.start_play(mcts_player, human, start_player=1, is_shown=1)
+        # set start_player=1 for human first
+        game.start_play(mcts_player, human, start_player=0, is_shown=1)
     except KeyboardInterrupt:
         print('\n\rquit')
 
