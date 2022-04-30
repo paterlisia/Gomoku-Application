@@ -55,7 +55,7 @@ def run():
     cwd = os.getcwd()  # Get the current working directory (cwd)
     files = os.listdir(cwd)  # Get all the files in that directory
     print("Files in %r: %s" % (cwd, files))
-    model_file = 'model/PytorchNet1500.pth'
+    model_file = 'model/PytorchCheckpoint-1399.pth'
     try:
         board = Board(width=width, height=height, n_in_row=n)
         game = Game(board)
