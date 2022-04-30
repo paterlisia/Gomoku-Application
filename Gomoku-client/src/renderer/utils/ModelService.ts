@@ -3,14 +3,28 @@ import axios from 'axios';
 export default class ModelService {
   Config: any;
 
-  // HTTP GET request to get image detection results
-  async getImage(params = {}) {
-    console.log('Calling service for image detection results');
+  // HTTP GET request to start the game
+  async startPlay(params = {}) {
+    console.log('Calling service to start the game');
     const config = {
       ...this.Config,
       ...{
         method: 'get',
-        url: 'http://127.0.0.1:5000/get',
+        url: 'http://localhost:5000/start',
+        params,
+      },
+    };
+    return axios(config);
+  }
+
+  // HTTP GET request to get AI model actions and update the game board
+  async getAction(params = {}) {
+    console.log('Calling service for AI model actions');
+    const config = {
+      ...this.Config,
+      ...{
+        method: 'get',
+        url: 'http://127.0.0.1:5000/action',
         params,
       },
     };

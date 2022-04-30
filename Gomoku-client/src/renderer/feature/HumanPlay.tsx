@@ -2,6 +2,9 @@ import "./board.css";
 import { React, useState } from "react";
 import { calculateWinner } from "./helper";
 
+// service to call api
+import ModelService from '../utils/ModelService';
+
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -18,7 +21,7 @@ function Board() {
     y: 0
   });
 
-  const handleClick = (y, x) => {
+  const handleBoard = (y, x) => {
     const newBoard = JSON.parse(JSON.stringify(board));
     console.log("newBoard:", typeof newBoard);
     console.log("第 23 行的 newBoard:", newBoard); // 這邊的 newBoard 也是有存取到最新的棋盤
@@ -51,10 +54,57 @@ function Board() {
     console.log("newBoard[y][x]", typeof newBoard[1][1]);
 
     setWhiteIsNext(!whiteIsNext);
+  }
+
+  const handleClick = (y, x) => {
+    // set human change
+    handleClick(y, x);
+
+    // set AI change
+    getModelAction()
   };
 
+  // send GET request to backend to get the model action
+  const getModelAction = () => {
+
+    // call API to get model decision
+    const service = new ModelService();
+    const rsp = service.getAction({ url: imgUrl });
+    console.log('waiting for AI to decide...');
+
+    rsp
+      .then((response) => {
+        const { res } = response.data;
+        console.log('res:', res);
+
+        return response;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  // start play game
+  const startPlay = () => {
+    // call API to get model decision
+    const service = new ModelService();
+    const rsp = service.startPlay();
+    console.log('waiting for AI to decide...');
+
+    rsp
+      .then((response) => {
+        const { res } = response.data;
+        console.log('res:', res);
+
+        return response;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   function renderSquare(j, i) {
-    return <Square value={board[j][i]} onClick={() => handleClick(j, i)} />;
+    return <Square value={board[j][i]} onClick={() => handleBoard(j, i)} />;
   }
 
   const winner = calculateWinner(
@@ -82,6 +132,12 @@ function Board() {
       })}
       <div className="status">
         <div>{status}</div>
+        <button
+          type="button"
+          onClick={() => startPlay()}
+        >
+          Start
+        </button>
         <button
           type="button"
           class="btn btn-dark"

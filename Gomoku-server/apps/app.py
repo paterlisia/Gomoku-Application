@@ -2,6 +2,7 @@ from flask import Flask
 from flask import Flask, jsonify
 from flask import abort
 from flask import request
+from flask_cors import *
 
 import yaml
 import json
@@ -11,9 +12,14 @@ sys.path.append("..")
 
 from apps.utils import run 
 
+# model
+from AIPlayer import Game
+
 app = Flask(__name__)
 app_config = {"host": "127.0.0.1", "port": "5000"}
 
+# allow cors
+CORS(app, supports_credentials=True)
 imgs = []
 
 with open(sys.path[0] + "/../configs/Global-Config.yaml", 'r') as fp:
@@ -46,20 +52,52 @@ def upload_model():
     # return results to front-end
     return jsonify(retdata)
 
+# TODO: API for starting the game
+@app.route('/start', methods=['GET'])  
+def start_game():
+
+    # get actions from Ai and update board
+    player = Game()
+    data_return = player.init_player()
+
+    
+    # data to return to the client
+    data_dict = {
+                    "history_states": data_return[0], 
+                    "availables":     data_return[1], 
+                    "last_move":      data_return[2]
+                }
+    print(data_dict)
+
+    return jsonify(data_dict)
 
 # TODO: API for human player
-@app.route('/get', methods=['GET'])  
+@app.route('/action', methods=['GET'])  
 def getData():
-    url = request.args.get("url")  
-    imgs = []
-    imgs.append(url)
 
-    cases = run(imgs, url)
+    # parse data from client
+    history_states = request.args.get("history_states")  
+    availables = request.args.get("availables")  
+    last_move = request.args.get("last_move")  
+    x = request.args.get("x")  
+    y = request.args.get("y")  
 
-    case_dict = {"url": url}
-    print(case_dict)
+    # get actions from Ai and update board
+    player = Game()
+    data_return = player.start_play(history_states, availables, last_move, x, y)
 
-    return jsonify(case_dict)
+    
+    # data to return to the client
+    data_dict = {
+                    "history_states": data_return[0], 
+                    "availables":     data_return[1], 
+                    "last_move":      data_return[2], 
+                    "x":              data_return[3], 
+                    "y":              data_return[4]
+                }
+    print(data_dict)
+
+    return jsonify(data_dict)
 
 
 if __name__ == '__main__':
