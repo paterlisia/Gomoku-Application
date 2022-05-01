@@ -19,56 +19,63 @@ function Board() {
   const [historyStates, setHistoryStates] = useState({});
   const [lastMove, setLastMove] = useState(-1);
   const [whiteIsNext, setWhiteIsNext] = useState(true);
-  const [position, setPosition] = useState({
-    x: 0,
-    y: 0
-  });
+  const [winner, setWinner] = useState(false);
 
-  const handleBoard = (y, x) => {
+  const handleBoard = (humany: number, humanx: number, AIy: number, AIx: number) => {
     const newBoard = JSON.parse(JSON.stringify(board));
     console.log("newBoard:", typeof newBoard);
     console.log("newboard:", newBoard); // latest board
-    console.log("第 24 行的 newBoard[y][x]:", newBoard[y][x]);
-
-    if (
-      calculateWinner(
-        position.y,
-        position.x,
-        newBoard,
-        newBoard[position.y][position.x]
-      ) ||
-      newBoard[y][x] !== null // cannot set duplicate
+    console.log("第 24 行的 newBoard[y][x]:", newBoard[humany][humanx]);
+    // if human wins
+    const humanWin = calculateWinner(
+      humany,
+      humanx,
+      newBoard,
+      newBoard[humany][humanx]
+    )
+    if (humanWin ||
+      newBoard[humany][humanx] !== null // cannot set duplicate
     ) {
+      setWinner(humanWin);
       return;
     }
-    newBoard[y][x] = whiteIsNext ? "⚫" : "⚪";
+    // human move update
+    newBoard[humany][humanx] =  "⚫" ;
+    // if AI wins
+    const AIWin = calculateWinner(
+      AIy,
+      AIx,
+      newBoard,
+      newBoard[AIy][AIx]
+    )
+    if (
+      AIWin ||
+      newBoard[AIy][AIx] !== null // cannot set duplicate
+    ) {
+      setWinner(AIWin);
+      return;
+    }
 
-    const positionX = x;
-    const positionY = y;
+    // AI move update
 
-    setPosition({
-      x: positionX,
-      y: positionY
-    });
+    newBoard[AIy][AIx] =  "⚪";
 
     setBoard(newBoard);
     console.log("new board:", newBoard);
-    console.log("last move", newBoard[y][x]);
+    console.log("last move", newBoard[humany][humanx]);
     console.log("player", typeof newBoard[1][1]);
     console.log("white?", whiteIsNext);
+    setWhiteIsNext(!whiteIsNext);
   }
 
-  const handleClick = (y, x) => {
-    // set human change
-    handleBoard(y, x);
+  const handleClick = (y: number, x: number) => {
 
-    setWhiteIsNext(!whiteIsNext);
     // set AI change
     getModelAction(x, y)
   };
 
   // send GET request to backend to get the model action
-  const getModelAction = (x, y) => {
+  const getModelAction = (humanx: number, humany: number) => {
 
     // call API to get model decision
     const service = new ModelService();
@@ -77,8 +84,8 @@ function Board() {
       history_states: historyStates,
       availables:     available,
       last_move:      lastMove,
-      x:              x,
-      y:              y
+      x:              humanx,
+      y:              humany
   });
     console.log('waiting for AI to decide...');
 
@@ -97,7 +104,7 @@ function Board() {
         setLastMove(last_move);
 
         // AI move
-        handleBoard(x, y)
+        handleBoard(humany, humanx, y, x)
         return response;
       })
       .catch((error) => {
@@ -134,12 +141,12 @@ function Board() {
     return <Square value={board[j][i]} onClick={() => handleClick(j, i)} />;
   }
 
-  const winner = calculateWinner(
-    position.y,
-    position.x,
-    board,
-    board[position.y][position.x]
-  );
+  // const winner = calculateWinner(
+  //   position.y,
+  //   position.x,
+  //   board,
+  //   board[position.y][position.x]
+  // );
 
   let status;
   if (winner) {
