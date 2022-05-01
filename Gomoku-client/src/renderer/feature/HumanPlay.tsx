@@ -15,6 +15,9 @@ function Square(props) {
 
 function Board() {
   const [board, setBoard] = useState(Array(19).fill(Array(19).fill(null)));
+  const [available, setAvailable] = useState([]);
+  const [historyStates, setHistoryStates] = useState({});
+  const [lastMove, setLastMove] = useState(-1);
   const [whiteIsNext, setWhiteIsNext] = useState(true);
   const [position, setPosition] = useState({
     x: 0,
@@ -24,8 +27,8 @@ function Board() {
   const handleBoard = (y, x) => {
     const newBoard = JSON.parse(JSON.stringify(board));
     console.log("newBoard:", typeof newBoard);
-    console.log("第 23 行的 newBoard:", newBoard); // 這邊的 newBoard 也是有存取到最新的棋盤
-    console.log("第 24 行的 newBoard[y][x]:", newBoard[y][x]); // 想知道為何這邊的值會是 null
+    console.log("newboard:", newBoard); // latest board
+    console.log("第 24 行的 newBoard[y][x]:", newBoard[y][x]);
 
     if (
       calculateWinner(
@@ -34,7 +37,7 @@ function Board() {
         newBoard,
         newBoard[position.y][position.x]
       ) ||
-      newBoard[y][x] !== null // 如果該位置已有子就不能再下
+      newBoard[y][x] !== null // cannot set duplicate
     ) {
       return;
     }
@@ -49,34 +52,52 @@ function Board() {
     });
 
     setBoard(newBoard);
-    console.log("第 48 行，在 setBoard 樓下的 newBoard", newBoard);
-    console.log("第 49 行，在 setBoard 樓下的 newBoard[y][x]", newBoard[y][x]);
-    console.log("newBoard[y][x]", typeof newBoard[1][1]);
-
-    setWhiteIsNext(!whiteIsNext);
+    console.log("new board:", newBoard);
+    console.log("last move", newBoard[y][x]);
+    console.log("player", typeof newBoard[1][1]);
+    console.log("white?", whiteIsNext);
   }
 
   const handleClick = (y, x) => {
     // set human change
-    handleClick(y, x);
+    handleBoard(y, x);
 
+    setWhiteIsNext(!whiteIsNext);
     // set AI change
-    getModelAction()
+    getModelAction(x, y)
   };
 
   // send GET request to backend to get the model action
-  const getModelAction = () => {
+  const getModelAction = (x, y) => {
 
     // call API to get model decision
     const service = new ModelService();
-    const rsp = service.getAction({ url: imgUrl });
+    console.log(available);
+    const rsp = service.getAction({
+      history_states: historyStates,
+      availables:     available,
+      last_move:      lastMove,
+      x:              x,
+      y:              y
+  });
     console.log('waiting for AI to decide...');
 
     rsp
       .then((response) => {
-        const { res } = response.data;
-        console.log('res:', res);
+        console.log('res:', response);
+        const { history_states, availables, last_move, x, y } = response.data;
 
+        console.log('history_states:', history_states);
+        console.log('availables:', history_states);
+        console.log('last_move:', history_states);
+
+        // set corresponding state in hooks
+        setAvailable(availables);
+        setHistoryStates(history_states);
+        setLastMove(last_move);
+
+        // AI move
+        handleBoard(x, y)
         return response;
       })
       .catch((error) => {
@@ -93,9 +114,15 @@ function Board() {
 
     rsp
       .then((response) => {
-        const { res } = response.data;
-        console.log('res:', res);
+        const { availables, history_states, last_move } = response.data;
+        console.log('availables:', availables);
+        console.log('history_states:', history_states);
+        console.log('last_move:', last_move);
 
+        // set corresponding state in hooks
+        setAvailable(availables);
+        setHistoryStates(history_states);
+        setLastMove(last_move);
         return response;
       })
       .catch((error) => {
@@ -104,7 +131,7 @@ function Board() {
   }
 
   function renderSquare(j, i) {
-    return <Square value={board[j][i]} onClick={() => handleBoard(j, i)} />;
+    return <Square value={board[j][i]} onClick={() => handleClick(j, i)} />;
   }
 
   const winner = calculateWinner(
@@ -152,6 +179,7 @@ function Board() {
 }
 
 function HumanPlay() {
+
   return (
     <div className="gameBoard">
       <h1>Gomoku</h1>

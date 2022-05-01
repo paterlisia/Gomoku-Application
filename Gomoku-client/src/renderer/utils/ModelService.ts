@@ -18,14 +18,14 @@ export default class ModelService {
   }
 
   // HTTP GET request to get AI model actions and update the game board
-  async getAction(params = {}) {
+  async getAction(data = {}) {
     console.log('Calling service for AI model actions');
     const config = {
       ...this.Config,
       ...{
-        method: 'get',
+        method: 'post',
         url: 'http://127.0.0.1:5000/action',
-        params,
+        data,
       },
     };
     return axios(config);

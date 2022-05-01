@@ -60,10 +60,10 @@ class Game(object):
         files = os.listdir(cwd)  # Get all the files in that directory
         print("Files in %r: %s" % (cwd, files))
         # model file here
-        model_file = 'model/PytorchCheckpoint-1399.pth'
+        model_file = '../model/PytorchCheckpoint-1399.pth'
 
         # the new or history board
-        self.board = Board(width , height, n, state=history_states)
+        self.board = Board(width , height, n, states=history_states)
         self.board.init_board(availables=availables, last_move=last_move)
             
         # load the trained policy_value_net with PyTorch
@@ -111,7 +111,7 @@ class Game(object):
 
         # calculate AI move steps
         move = AIPlayer.get_action(self.board)
-        print("current AIPlayer:", AIPlayer)
+        # print("current AIPlayer:", AIPlayer)
 
         # transfer to coodinate
         h = move // 8

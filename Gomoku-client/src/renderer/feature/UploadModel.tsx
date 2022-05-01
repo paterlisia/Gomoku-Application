@@ -66,6 +66,7 @@ export default function UploadModel() {
 
     rsp
       .then((response) => {
+        console.log('res:', response);
         const { res } = response.data;
         console.log('res:', res);
         if (res === 'success') {
