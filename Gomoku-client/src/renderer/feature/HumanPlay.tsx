@@ -5,6 +5,10 @@ import { calculateWinner } from "./helper";
 // service to call api
 import ModelService from '../utils/ModelService';
 
+// ui framework from antd
+import { Button } from 'antd';
+import { CheckOutlined, UndoOutlined } from '@ant-design/icons';
+
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -14,7 +18,7 @@ function Square(props) {
 }
 
 function Board() {
-  const [board, setBoard] = useState(Array(19).fill(Array(19).fill(null)));
+  const [board, setBoard] = useState(Array(8).fill(Array(8).fill(null)));
   const [available, setAvailable] = useState([]);
   const [historyStates, setHistoryStates] = useState({});
   const [lastMove, setLastMove] = useState(-1);
@@ -27,20 +31,20 @@ function Board() {
     console.log("newboard:", newBoard); // latest board
     console.log("第 24 行的 newBoard[y][x]:", newBoard[humany][humanx]);
     // if human wins
-    const humanWin = calculateWinner(
-      humany,
-      humanx,
-      newBoard,
-      newBoard[humany][humanx]
-    )
-    if (humanWin ||
-      newBoard[humany][humanx] !== null // cannot set duplicate
-    ) {
-      setWinner(humanWin);
-      return;
-    }
+    // const humanWin = calculateWinner(
+    //   humany,
+    //   humanx,
+    //   newBoard,
+    //   newBoard[humany][humanx]
+    // )
+    // if (humanWin ||
+    //   newBoard[humany][humanx] !== null // cannot set duplicate
+    // ) {
+    //   setWinner(humanWin);
+    //   return;
+    // }
     // human move update
-    newBoard[humany][humanx] =  "⚫" ;
+    newBoard[humany][humanx] = "⚫";
     // if AI wins
     const AIWin = calculateWinner(
       AIy,
@@ -58,7 +62,7 @@ function Board() {
 
     // AI move update
 
-    newBoard[AIy][AIx] =  "⚪";
+    newBoard[AIy][AIx] = "⚪";
 
     setBoard(newBoard);
     console.log("new board:", newBoard);
@@ -68,10 +72,33 @@ function Board() {
     setWhiteIsNext(!whiteIsNext);
   }
 
-  const handleClick = (y: number, x: number) => {
+  const ifEnd = (y: number, x: number) => {
+    const newBoard = JSON.parse(JSON.stringify(board));
+    console.log("newBoard:", typeof newBoard);
+    console.log("newboard:", newBoard); // latest board
+    console.log("第 24 行的 newBoard[y][x]:", newBoard[y][x]);
+    // if human wins
+    const win = calculateWinner(
+      y,
+      x,
+      newBoard,
+      newBoard[x][x]
+    )
+    if (win ||
+      newBoard[y][x] !== null // cannot set duplicate
+    ) {
+      setWinner(win);
+      return true;
+    }
+  }
 
+  const handleClick = (y: number, x: number) => {
+    // if the game ends
+    if (ifEnd(y, x)) {
+      return;
+    }
     // set AI change
-    getModelAction(x, y)
+    getModelAction(x, y);
   };
 
   // send GET request to backend to get the model action
@@ -82,11 +109,11 @@ function Board() {
     console.log(available);
     const rsp = service.getAction({
       history_states: historyStates,
-      availables:     available,
-      last_move:      lastMove,
-      x:              humanx,
-      y:              humany
-  });
+      availables: available,
+      last_move: lastMove,
+      x: humanx,
+      y: humany
+    });
     console.log('waiting for AI to decide...');
 
     rsp
@@ -156,7 +183,7 @@ function Board() {
   }
 
   return (
-    <div>
+    <div className="board">
       {board.map((y, columnIndex) => {
         return (
           <div className="board-row" key={columnIndex}>
@@ -166,20 +193,41 @@ function Board() {
       })}
       <div className="status">
         <div>{status}</div>
-        <button
+        <Button
+            // type="primary"
+            shape="round"
+            icon={<CheckOutlined />}
+            size="large"
+            onClick={() => startPlay()}
+            color="#597ef7"
+            >
+
+          Start
+        </Button>
+
+        <Button
+            // type="primary"
+            shape="round"
+            icon={<UndoOutlined />}
+            size="large"
+            onClick={() => () => window.location.reload()}
+            >
+            Restart
+        </Button>
+        {/* <button
           type="button"
           onClick={() => startPlay()}
         >
           Start
-        </button>
-        <button
+        </button> */}
+        {/* <button
           type="button"
           class="btn btn-dark"
           value="reload"
           onClick={() => window.location.reload()}
         >
           Restart
-        </button>
+        </button> */}
       </div>
     </div>
   );
