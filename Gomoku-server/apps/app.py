@@ -96,12 +96,15 @@ def getData():
     last_move = data["last_move"]
     x = data["x"]
     y = data["y"]
-    print("history_states", history_states)
+    states_int = {}
+    for key in history_states:
+        states_int[int(key)] = history_states[key]
+    print("history_states", states_int)
     print("availables", availables)
     print("last_move", last_move)
     # get actions from Ai and update board
     player = Game()
-    data_return = player.start_play(history_states, availables, last_move, x, y)
+    data_return = player.start_play(states_int, availables, last_move, x, y)
 
     # convert numpy int64 to int for stringfy
     available_str = {}
