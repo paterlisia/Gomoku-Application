@@ -14,7 +14,7 @@ function Square(props) {
 }
 
 function Board() {
-  const [board, setBoard] = useState(Array(19).fill(Array(19).fill(null)));
+  const [board, setBoard] = useState(Array(8).fill(Array(8).fill(null)));
   const [available, setAvailable] = useState([]);
   const [historyStates, setHistoryStates] = useState({});
   const [lastMove, setLastMove] = useState(-1);
@@ -27,18 +27,18 @@ function Board() {
     console.log("newboard:", newBoard); // latest board
     console.log("第 24 行的 newBoard[y][x]:", newBoard[humany][humanx]);
     // if human wins
-    const humanWin = calculateWinner(
-      humany,
-      humanx,
-      newBoard,
-      newBoard[humany][humanx]
-    )
-    if (humanWin ||
-      newBoard[humany][humanx] !== null // cannot set duplicate
-    ) {
-      setWinner(humanWin);
-      return;
-    }
+    // const humanWin = calculateWinner(
+    //   humany,
+    //   humanx,
+    //   newBoard,
+    //   newBoard[humany][humanx]
+    // )
+    // if (humanWin ||
+    //   newBoard[humany][humanx] !== null // cannot set duplicate
+    // ) {
+    //   setWinner(humanWin);
+    //   return;
+    // }
     // human move update
     newBoard[humany][humanx] =  "⚫" ;
     // if AI wins
@@ -68,10 +68,33 @@ function Board() {
     setWhiteIsNext(!whiteIsNext);
   }
 
-  const handleClick = (y: number, x: number) => {
+  const ifEnd = (y: number, x: number) => {
+    const newBoard = JSON.parse(JSON.stringify(board));
+    console.log("newBoard:", typeof newBoard);
+    console.log("newboard:", newBoard); // latest board
+    console.log("第 24 行的 newBoard[y][x]:", newBoard[y][x]);
+    // if human wins
+    const win = calculateWinner(
+      y,
+      x,
+      newBoard,
+      newBoard[x][x]
+    )
+    if (win ||
+      newBoard[y][x] !== null // cannot set duplicate
+    ) {
+      setWinner(win);
+      return true;
+    }
+  }
 
+  const handleClick = (y: number, x: number) => {
+    // if the game ends
+    if (ifEnd(y, x)) {
+      return;
+    }
     // set AI change
-    getModelAction(x, y)
+    getModelAction(x, y);
   };
 
   // send GET request to backend to get the model action
