@@ -1,3 +1,5 @@
+
+/* import backgroundImage from 'assets/imgs/wood-bg.jpg'; */
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
@@ -15,8 +17,9 @@ h1 {
 }
 
 .board-row {
-  max-width: 710px;
+  max-width: 450px;
   margin: 0 auto;
+
 }
 .board-row:after {
   clear: both;
@@ -34,6 +37,10 @@ h1 {
   align-items: center;
 }
 
+.board {
+  margin: 0 auto;
+}
+
 .square {
   background: #fff;
   border: 1.5px solid #999;
@@ -41,12 +48,13 @@ h1 {
   font-size: 24px;
   font-weight: bold;
   line-height: 34px;
-  height: 38px;
+  height: 50px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
-  width: 38px;
+  width: 50px;
   cursor: pointer;
+  background-image: url('assets/imgs/wood-bg.jpg');
 }
 
 .square:focus {

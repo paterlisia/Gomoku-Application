@@ -5,6 +5,10 @@ import { calculateWinner } from "./helper";
 // service to call api
 import ModelService from '../utils/ModelService';
 
+// ui framework from antd
+import { Button } from 'antd';
+import { CheckOutlined, UndoOutlined } from '@ant-design/icons';
+
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -40,7 +44,7 @@ function Board() {
     //   return;
     // }
     // human move update
-    newBoard[humany][humanx] =  "⚫" ;
+    newBoard[humany][humanx] = "⚫";
     // if AI wins
     const AIWin = calculateWinner(
       AIy,
@@ -58,7 +62,7 @@ function Board() {
 
     // AI move update
 
-    newBoard[AIy][AIx] =  "⚪";
+    newBoard[AIy][AIx] = "⚪";
 
     setBoard(newBoard);
     console.log("new board:", newBoard);
@@ -105,11 +109,11 @@ function Board() {
     console.log(available);
     const rsp = service.getAction({
       history_states: historyStates,
-      availables:     available,
-      last_move:      lastMove,
-      x:              humanx,
-      y:              humany
-  });
+      availables: available,
+      last_move: lastMove,
+      x: humanx,
+      y: humany
+    });
     console.log('waiting for AI to decide...');
 
     rsp
@@ -179,7 +183,7 @@ function Board() {
   }
 
   return (
-    <div>
+    <div className="board">
       {board.map((y, columnIndex) => {
         return (
           <div className="board-row" key={columnIndex}>
@@ -189,20 +193,41 @@ function Board() {
       })}
       <div className="status">
         <div>{status}</div>
-        <button
+        <Button
+            // type="primary"
+            shape="round"
+            icon={<CheckOutlined />}
+            size="large"
+            onClick={() => startPlay()}
+            color="#597ef7"
+            >
+
+          Start
+        </Button>
+
+        <Button
+            // type="primary"
+            shape="round"
+            icon={<UndoOutlined />}
+            size="large"
+            onClick={() => () => window.location.reload()}
+            >
+            Restart
+        </Button>
+        {/* <button
           type="button"
           onClick={() => startPlay()}
         >
           Start
-        </button>
-        <button
+        </button> */}
+        {/* <button
           type="button"
           class="btn btn-dark"
           value="reload"
           onClick={() => window.location.reload()}
         >
           Restart
-        </button>
+        </button> */}
       </div>
     </div>
   );
