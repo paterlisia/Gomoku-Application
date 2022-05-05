@@ -2,11 +2,13 @@ import "./board.css";
 import { React, useState } from "react";
 import { calculateWinner } from "./helper";
 
+import { Divider } from 'antd';
+
 // service to call api
 import ModelService from '../utils/ModelService';
 
 // ui framework from antd
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { CheckOutlined, UndoOutlined } from '@ant-design/icons';
 
 function Square(props) {
@@ -57,6 +59,7 @@ function Board() {
       newBoard[AIy][AIx] !== null // cannot set duplicate
     ) {
       setWinner(AIWin);
+      AIWinEvent();
       return;
     }
 
@@ -95,6 +98,8 @@ function Board() {
   const handleClick = (y: number, x: number) => {
     // if the game ends
     if (ifEnd(y, x)) {
+      console.log("win~");
+      humanWinEvent();
       return;
     }
     // set AI change
@@ -119,11 +124,20 @@ function Board() {
     rsp
       .then((response) => {
         console.log('res:', response);
-        const { history_states, availables, last_move, x, y } = response.data;
+        const { history_states, availables, last_move, x, y, winner } = response.data;
 
         console.log('history_states:', history_states);
         console.log('availables:', history_states);
         console.log('last_move:', history_states);
+        console.log('winner:', winner);
+        if (winner == 2) {
+          AIWinEvent();
+          return;
+        } else if (winner == 1) {
+          humanWinEvent();
+          return;
+        }
+
 
         // set corresponding state in hooks
         setAvailable(availables);
@@ -164,6 +178,16 @@ function Board() {
       });
   }
 
+  // when human wins
+  const humanWinEvent = () => {
+    message.success('You win the game!');
+  };
+
+  // when human wins
+  const AIWinEvent = () => {
+    message.error('You lose, can try again!');
+  };
+
   function renderSquare(j, i) {
     return <Square value={board[j][i]} onClick={() => handleClick(j, i)} />;
   }
@@ -184,6 +208,7 @@ function Board() {
 
   return (
     <div className="board">
+      <Divider plain>Mode</Divider>
       {board.map((y, columnIndex) => {
         return (
           <div className="board-row" key={columnIndex}>

@@ -82,9 +82,9 @@ class Game(object):
         self.human_update_board(x, y)
 
         # get ai actions and update the board
-        h, w = self.get_model_action(mcts_player)
+        h, w, winner = self.get_model_action(mcts_player)
 
-        return h, w, self.board.states, self.board.availables, self.board.last_move
+        return h, w, self.board.states, self.board.availables, self.board.last_move, winner
 
 
     # human move from the client
@@ -121,10 +121,10 @@ class Game(object):
         # update board
         self.board.do_move(move)
 
-        return h, w
+        _, winner = self.board.game_end()
+        return h, w, winner
         # if is_shown:
         #     self.graphic(self.board, AIPlayer1.AIPlayer, AIPlayer2.AIPlayer)
-        # end, winner = self.board.game_end()
         # if end:
         #     if is_shown:
         #         if winner != -1:

@@ -1,1 +1,3 @@
-python Gomoku-server/human_play.py
+cd Gomoku-server
+# conda activate base
+python apps/app.py

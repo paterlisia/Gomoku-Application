@@ -116,7 +116,8 @@ def getData():
                     "availables":     data_return[3], 
                     "last_move":      data_return[4].item(), 
                     "x":              data_return[0].item(), 
-                    "y":              data_return[1].item()
+                    "y":              data_return[1].item(),
+                    "winner":         data_return[5]
                 }
     print(data_dict)
     # available_str = json.dumps(data_return[2], cls=NpEncoder)
