@@ -109,6 +109,12 @@ class Game(object):
         # players = {p1: player1, p2: player2}
         # player = players[current_player]  # player object(Human)
 
+
+        _, winner = self.board.game_end()
+
+        # game ends
+        if winner != -1:
+            return -1, -1, winner
         # calculate AI move steps
         move = AIPlayer.get_action(self.board)
         # print("current AIPlayer:", AIPlayer)
@@ -120,7 +126,6 @@ class Game(object):
         
         # update board
         self.board.do_move(move)
-
         _, winner = self.board.game_end()
         return h, w, winner
         # if is_shown:

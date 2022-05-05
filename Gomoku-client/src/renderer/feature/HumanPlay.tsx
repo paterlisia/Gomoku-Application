@@ -58,7 +58,7 @@ function Board() {
       newBoard[AIy][AIx] !== null // cannot set duplicate
     ) {
       setWinner(AIWin);
-      AIWinEvent();
+      // AIWinEvent();
       return;
     }
 
@@ -96,11 +96,11 @@ function Board() {
 
   const handleClick = (y: number, x: number) => {
     // if the game ends
-    if (ifEnd(y, x)) {
-      console.log("win~");
-      humanWinEvent();
-      return;
-    }
+    // if (ifEnd(y, x)) {
+    //   console.log("win~");
+    //   humanWinEvent();
+    //   return;
+    // }
     // set AI change
     getModelAction(x, y);
   };
@@ -132,10 +132,10 @@ function Board() {
         console.log('winner:', winner);
         if (winner == 2) {
           AIWinEvent();
-          return;
+          // return;
         } else if (winner == 1) {
           humanWinEvent();
-          return;
+          // return;
         }
 
 
@@ -183,11 +183,11 @@ function Board() {
   function handleSelect(value: any) {
     console.log(`selected ${value}`);
     if (value == "easy") {
-      setMode(40);
+      setMode(2);
     } else if (value == "medium") {
-      setMode(100);
+      setMode(10);
     } else {
-      setMode(300);
+      setMode(100);
     }
   }
 
@@ -261,7 +261,7 @@ function Board() {
       <div className="status">
         <div>{status}</div>
 
-        <Select mode="tags" style={{ width: 140 }} placeholder="Select difficulty" onChange={handleSelect}>
+        <Select style={{ width: 140 }} placeholder="Select difficulty" onChange={handleSelect}>
         <Option value="easy">easy</Option>
         <Option value="medium">medium</Option>
         <Option value="hard" >hard</Option>
@@ -290,7 +290,7 @@ function Board() {
         <p>You win the game !!!</p>
         <p>You can try a harder mode if you want :)</p>
         </Modal>
-        <Modal title="Sorry..." visible={isLoseModalVisible} onOk={() => setIsWinModalVisible(false)} onCancel={() => setIsLoseModalVisible(false)}>
+        <Modal title="Sorry..." visible={isLoseModalVisible} onOk={() => setIsLoseModalVisible(false)} onCancel={() => setIsLoseModalVisible(false)}>
         <p>You lose the game...</p>
         <p>You can try again~</p>
         </Modal>
