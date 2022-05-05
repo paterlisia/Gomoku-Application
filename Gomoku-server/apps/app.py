@@ -108,6 +108,7 @@ def getData():
     player = Game()
     data_return = player.start_play(states_int, availables, last_move, x, y, mode)
 
+    print(data_return[4], type(data_return[4]))
     # convert numpy int64 to int for stringfy
     available_str = {}
     for key in data_return[2]:
@@ -116,9 +117,9 @@ def getData():
     data_dict = {
                     "history_states": available_str, 
                     "availables":     data_return[3], 
-                    "last_move":      data_return[4].item(), 
-                    "x":              data_return[0].item(), 
-                    "y":              data_return[1].item(),
+                    "last_move":      int(data_return[4]), 
+                    "x":              int(data_return[0]), 
+                    "y":              int(data_return[1]),
                     "winner":         data_return[5]
                 }
     print(data_dict)
