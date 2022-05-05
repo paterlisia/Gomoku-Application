@@ -14,6 +14,8 @@ Our technology stack is as follows: we will build our across-platform desktop ap
 
 ## Preview of the application
 
+- Play Gomoku with your trained model
+![alt text](playPage.png)
 
 ## Description of code  
 - Gomoku-client: Front-end of the whole project.

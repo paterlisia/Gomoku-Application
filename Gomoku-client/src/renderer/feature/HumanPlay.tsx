@@ -1,5 +1,5 @@
 import "./board.css";
-import { React, useState } from "react";
+import {  React, useState } from "react";
 import { calculateWinner } from "./helper";
 
 import { Divider } from 'antd';
@@ -8,7 +8,7 @@ import { Divider } from 'antd';
 import ModelService from '../utils/ModelService';
 
 // ui framework from antd
-import { Button, notification, Modal } from 'antd';
+import { Button, notification, Modal, Select } from 'antd';
 import { CheckOutlined, UndoOutlined } from '@ant-design/icons';
 
 function Square(props) {
@@ -28,6 +28,8 @@ function Board() {
   const [winner, setWinner] = useState(false);
   const [isWinModalVisible, setIsWinModalVisible] = useState(false);
   const [isLoseModalVisible, setIsLoseModalVisible] = useState(false);
+
+  const { Option } = Select;
 
   const handleBoard = (humany: number, humanx: number, AIy: number, AIx: number) => {
     const newBoard = JSON.parse(JSON.stringify(board));
@@ -167,6 +169,11 @@ function Board() {
       startNotify();
   }
 
+  // handle select
+  function handleSelect(value: any) {
+    console.log(`selected ${value}`);
+  }
+
   // handle restart the game
   const handleRestart = () => {
     // reset the game board
@@ -226,7 +233,6 @@ function Board() {
 
   return (
     <div className="board">
-      <Divider plain>Mode</Divider>
       {board.map((y, columnIndex) => {
         return (
           <div className="board-row" key={columnIndex}>
@@ -234,8 +240,15 @@ function Board() {
           </div>
         );
       })}
+      <Divider plain>Functions setting</Divider>
       <div className="status">
         <div>{status}</div>
+
+        <Select mode="tags" style={{ width: 140 }} placeholder="Select difficulty" onChange={handleSelect}>
+        <Option value="easy">easy</Option>
+        <Option value="medium">medium</Option>
+        <Option value="hard" >hard</Option>
+        </Select>
         <Button
             // type="primary"
             shape="round"
@@ -247,7 +260,6 @@ function Board() {
 
           Start
         </Button>
-
         <Button
             // type="primary"
             shape="round"
