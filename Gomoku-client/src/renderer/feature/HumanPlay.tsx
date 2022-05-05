@@ -1,12 +1,14 @@
 import "./board.css";
-import { React, useState } from "react";
+import {  React, useState } from "react";
 import { calculateWinner } from "./helper";
+
+import { Divider } from 'antd';
 
 // service to call api
 import ModelService from '../utils/ModelService';
 
 // ui framework from antd
-import { Button } from 'antd';
+import { Button, notification, Modal, Select } from 'antd';
 import { CheckOutlined, UndoOutlined } from '@ant-design/icons';
 
 function Square(props) {
@@ -24,25 +26,15 @@ function Board() {
   const [lastMove, setLastMove] = useState(-1);
   const [whiteIsNext, setWhiteIsNext] = useState(true);
   const [winner, setWinner] = useState(false);
+  const [isWinModalVisible, setIsWinModalVisible] = useState(false);
+  const [isLoseModalVisible, setIsLoseModalVisible] = useState(false);
+
+  const { Option } = Select;
 
   const handleBoard = (humany: number, humanx: number, AIy: number, AIx: number) => {
     const newBoard = JSON.parse(JSON.stringify(board));
     console.log("newBoard:", typeof newBoard);
     console.log("newboard:", newBoard); // latest board
-    console.log("第 24 行的 newBoard[y][x]:", newBoard[humany][humanx]);
-    // if human wins
-    // const humanWin = calculateWinner(
-    //   humany,
-    //   humanx,
-    //   newBoard,
-    //   newBoard[humany][humanx]
-    // )
-    // if (humanWin ||
-    //   newBoard[humany][humanx] !== null // cannot set duplicate
-    // ) {
-    //   setWinner(humanWin);
-    //   return;
-    // }
     // human move update
     newBoard[humany][humanx] = "⚫";
     // if AI wins
@@ -57,6 +49,7 @@ function Board() {
       newBoard[AIy][AIx] !== null // cannot set duplicate
     ) {
       setWinner(AIWin);
+      AIWinEvent();
       return;
     }
 
@@ -72,11 +65,11 @@ function Board() {
     setWhiteIsNext(!whiteIsNext);
   }
 
+  // check the winner
   const ifEnd = (y: number, x: number) => {
     const newBoard = JSON.parse(JSON.stringify(board));
     console.log("newBoard:", typeof newBoard);
     console.log("newboard:", newBoard); // latest board
-    console.log("第 24 行的 newBoard[y][x]:", newBoard[y][x]);
     // if human wins
     const win = calculateWinner(
       y,
@@ -95,6 +88,8 @@ function Board() {
   const handleClick = (y: number, x: number) => {
     // if the game ends
     if (ifEnd(y, x)) {
+      console.log("win~");
+      humanWinEvent();
       return;
     }
     // set AI change
@@ -119,11 +114,20 @@ function Board() {
     rsp
       .then((response) => {
         console.log('res:', response);
-        const { history_states, availables, last_move, x, y } = response.data;
+        const { history_states, availables, last_move, x, y, winner } = response.data;
 
         console.log('history_states:', history_states);
         console.log('availables:', history_states);
         console.log('last_move:', history_states);
+        console.log('winner:', winner);
+        if (winner == 2) {
+          AIWinEvent();
+          return;
+        } else if (winner == 1) {
+          humanWinEvent();
+          return;
+        }
+
 
         // set corresponding state in hooks
         setAvailable(availables);
@@ -162,18 +166,63 @@ function Board() {
       .catch((error) => {
         console.log(error);
       });
+      startNotify();
   }
 
-  function renderSquare(j, i) {
+  // handle select
+  function handleSelect(value: any) {
+    console.log(`selected ${value}`);
+  }
+
+  // handle restart the game
+  const handleRestart = () => {
+    // reset the game board
+    setBoard(Array(8).fill(Array(8).fill(null)));
+    restartNotify();
+    // sent start API to the backend
+    startPlay();
+  }
+
+  // start notification
+  const startNotify = () => {
+    notification.open({
+      message: 'Start the game',
+      description:
+        'The game starts and your AI model will be loading!',
+      onClick: () => {
+        console.log('Notification Clicked!');
+      },
+    });
+  }
+
+  // restart notification
+  const restartNotify = () => {
+    notification.open({
+      message: 'Restart the game',
+      description:
+        'The game board will be reset and your AI model will be reload...',
+      onClick: () => {
+        console.log('Notification Clicked!');
+      },
+    });
+  }
+
+
+  // when human wins
+  const humanWinEvent = () => {
+    // message.success('You win the game!');
+    setIsWinModalVisible(true);
+  };
+
+  // when human wins
+  const AIWinEvent = () => {
+    // message.error('You lose, can try again!');
+    setIsLoseModalVisible(true);
+  };
+
+  function renderSquare(j: number, i: number) {
     return <Square value={board[j][i]} onClick={() => handleClick(j, i)} />;
   }
-
-  // const winner = calculateWinner(
-  //   position.y,
-  //   position.x,
-  //   board,
-  //   board[position.y][position.x]
-  // );
 
   let status;
   if (winner) {
@@ -191,8 +240,15 @@ function Board() {
           </div>
         );
       })}
+      <Divider plain>Functions setting</Divider>
       <div className="status">
         <div>{status}</div>
+
+        <Select mode="tags" style={{ width: 140 }} placeholder="Select difficulty" onChange={handleSelect}>
+        <Option value="easy">easy</Option>
+        <Option value="medium">medium</Option>
+        <Option value="hard" >hard</Option>
+        </Select>
         <Button
             // type="primary"
             shape="round"
@@ -204,30 +260,23 @@ function Board() {
 
           Start
         </Button>
-
         <Button
             // type="primary"
             shape="round"
             icon={<UndoOutlined />}
             size="large"
-            onClick={() => () => window.location.reload()}
+            onClick={handleRestart}
             >
             Restart
         </Button>
-        {/* <button
-          type="button"
-          onClick={() => startPlay()}
-        >
-          Start
-        </button> */}
-        {/* <button
-          type="button"
-          class="btn btn-dark"
-          value="reload"
-          onClick={() => window.location.reload()}
-        >
-          Restart
-        </button> */}
+        <Modal title="Congratulations!" visible={isWinModalVisible} onOk={() => setIsWinModalVisible(false)} onCancel={() => setIsWinModalVisible(false)}>
+        <p>You win the game !!!</p>
+        <p>You can try a harder mode if you want :)</p>
+        </Modal>
+        <Modal title="Sorry..." visible={isLoseModalVisible} onOk={() => setIsWinModalVisible(false)} onCancel={() => setIsLoseModalVisible(false)}>
+        <p>You lose the game...</p>
+        <p>You can try again~</p>
+        </Modal>
       </div>
     </div>
   );

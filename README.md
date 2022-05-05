@@ -12,6 +12,11 @@ Besides we will implement an application for users to visualize the Gomoku gamin
         This will be an interaction between our users and their uploaded model, and users can play gomoku with their trained model. 
 Our technology stack is as follows: we will build our across-platform desktop application with `electron` and `react` in front-end, and use `hooks` for data interaction, also use `antd` framework for UI design; and using `flask` to design the back-end API.
 
+## Preview of the application
+
+- Play Gomoku with your trained model
+![alt text](playPage.png)
+
 ## Description of code  
 - Gomoku-client: Front-end of the whole project.
 - Gomoku-server: Back-end of the whole project.
