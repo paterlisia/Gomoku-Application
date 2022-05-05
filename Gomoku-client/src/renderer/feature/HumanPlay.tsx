@@ -10,6 +10,7 @@ import ModelService from '../utils/ModelService';
 // ui framework from antd
 import { Button, notification, Modal, Select } from 'antd';
 import { CheckOutlined, UndoOutlined } from '@ant-design/icons';
+import { useEffect } from "react";
 
 function Square(props) {
   return (
@@ -18,6 +19,8 @@ function Square(props) {
     </button>
   );
 }
+
+
 
 function Board() {
   const [board, setBoard] = useState(Array(8).fill(Array(8).fill(null)));
@@ -28,8 +31,14 @@ function Board() {
   const [winner, setWinner] = useState(false);
   const [isWinModalVisible, setIsWinModalVisible] = useState(false);
   const [isLoseModalVisible, setIsLoseModalVisible] = useState(false);
+  const [mode, setMode] = useState(50);  // difficulty of the model
 
   const { Option } = Select;
+
+  // hooks listen on board
+  // useEffect(()=> {
+
+  // }, board)
 
   const handleBoard = (humany: number, humanx: number, AIy: number, AIx: number) => {
     const newBoard = JSON.parse(JSON.stringify(board));
@@ -107,7 +116,8 @@ function Board() {
       availables: available,
       last_move: lastMove,
       x: humanx,
-      y: humany
+      y: humany,
+      mode: mode
     });
     console.log('waiting for AI to decide...');
 
@@ -172,6 +182,13 @@ function Board() {
   // handle select
   function handleSelect(value: any) {
     console.log(`selected ${value}`);
+    if (value == "easy") {
+      setMode(40);
+    } else if (value == "medium") {
+      setMode(100);
+    } else {
+      setMode(300);
+    }
   }
 
   // handle restart the game

@@ -51,7 +51,7 @@ class Game(object):
                     print('_'.center(8), end='')
             print('\r\n\r\n')
 
-    def start_play(self, history_states, availables, last_move, x, y):
+    def start_play(self, history_states, availables, last_move, x, y, mode):
         """continue or start a game between two players"""
 
         n = 5
@@ -68,7 +68,7 @@ class Game(object):
             
         # load the trained policy_value_net with PyTorch
         best_policy = PolicyValueNet(width, height, model_file = model_file)
-        mcts_player = MCTSPlayer(best_policy.policy_value_fn, c_puct=5, n_playout=400)
+        mcts_player = MCTSPlayer(best_policy.policy_value_fn, c_puct=5, n_playout=mode)
 
         # self.board.init_board(start_player)
         # p1, p2 = self.board.players
