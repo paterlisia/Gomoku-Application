@@ -57,4 +57,8 @@ sh start_backend.sh
 - __Comparision with other Monte Carlo tree search searches and training__: _Silver, David, et al. "Mastering chess and shogi by self-play with a general reinforcement learning algorithm." arXiv preprint arXiv:1712.01815 (2017)._
 
 ## Demo video
-https://github.com/paterlisia/Gomoku-Application/blob/final/video1183858489.mp4
+
+
+https://user-images.githubusercontent.com/41310207/167341345-27415299-a1c9-4991-85a6-9218da788f26.mp4
+
+
