@@ -15,15 +15,23 @@ class Board():
         self.n_in_row = n
         self.players = [1, 2]  # player1 and player2
 
+    
+    
     def init_board(self, start_player=0, availables=list(range(64)), last_move=-1):
         if self.width < self.n_in_row or self.height < self.n_in_row:
             raise Exception('board width and height can not be '
                             'less than {}'.format(self.n_in_row))
         self.current_player = self.players[start_player]  # start player
         # keep available moves in a list
-        self.availables = availables
+        #self.availables = list(range(64))
+        if availables == []:
+            self.availables = list(range(64))
+        else:
+            self.availables = availables
         # self.states = {}
         self.last_move = last_move
+    def update_player(self,x):
+        self.current_player = x
 
     def move_to_location(self, move):
         """

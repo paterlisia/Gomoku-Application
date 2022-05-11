@@ -13,8 +13,9 @@ sys.path.append("..")
 # from apps.utils import run 
 
 # model
-from AIPlayer import Game
-
+from AIPlayer2 import Game
+model1_path = ''
+model2_path = ''
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, np.integer):
@@ -30,8 +31,9 @@ class NpEncoder(json.JSONEncoder):
         return super(NpEncoder, self).default(obj)
 
 app = Flask(__name__)
-app_config = {"host": "127.0.0.1", "port": "5000"}
-
+app_config = {"host": "127.0.0.1", "port": "5001"}
+app.jinja_env.auto_reload = True
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 # allow cors
 CORS(app, supports_credentials=True)
 imgs = []
@@ -47,12 +49,17 @@ model2 = global_cfg["model2_path"]
 def upload_model():
     # load data from request
     data = request.get_json()
-    updated_data = json.loads(data["data"]) 
-    print(updated_data)
-    model1_path = updated_data["model1"]
-    model2_path = updated_data["model2"]
-    print("model1_path: ", model1_path)
-    print("model2_path: ", model2_path)
+    print("data is", data)
+    #updated_data = json.loads(data["data"]) 
+    #print(updated_data)
+    # model1_path = updated_data["model1"]
+    # model2_path = updated_data["model2"]
+    global model1_path 
+    global model2_path 
+    model1_path = data["model1"]
+    model2_path = data["model2"]
+    #print("model1_path: ", model1_path)
+    #rint("model2_path: ", model2_path)
 
     # TODO: run two models
     # load the two models and get results
@@ -106,7 +113,7 @@ def getData():
     print("mode", mode)
     # get actions from Ai and update board
     player = Game()
-    data_return = player.start_play(states_int, availables, last_move, x, y, mode)
+    data_return = player.start_play(states_int, availables, last_move, x, y, mode,model1_path)
 
     print(data_return[4], type(data_return[4]))
     # convert numpy int64 to int for stringfy
@@ -127,9 +134,86 @@ def getData():
     # print(type(available_str))
     # data_dict = json.dumps(data_dict, cls=NpEncoder)
     return jsonify(data_dict)
+@app.route('/action1', methods=['POST'])  
+def getData1():
+    # parse json data from post request
+    data = request.get_json() 
+    print('data is', data)
+    # parse data from client
+    history_states = data["history_states"]
+    availables = data["availables"]
+    last_move = data["last_move"]
+    mode = data["mode"]
+    states_int = {}
+    for key in history_states:
+        states_int[int(key)] = history_states[key]
+    print("history_states", states_int)
+    print("availables", availables)
+    print("last_move", last_move)
+    print("mode", mode)
+    # get actions from Ai and update board
+    player = Game()
+    print("model1_path: ", model1_path)
+    data_return = player.start_play1(states_int, availables, last_move, mode,model1_path)
+    print("data_return is: ",data_return, type(data_return))
+    print("data_return[4] is: ",data_return[4], type(data_return[4]))
+    # convert numpy int64 to int for stringfy
+    available_str = {}
+    for key in data_return[2]:
+        available_str[int(key)] = int(data_return[2][key])
+    # data to return to the client
+    data_dict = {   "x":              int(data_return[0]), 
+                    "y":              int(data_return[1]),
+                    "history_states": available_str, 
+                    "availables":     data_return[3], 
+                    "last_move":      int(data_return[4]), 
+                    "winner":         data_return[5]
+                }
+    print(data_dict)
+    # available_str = json.dumps(data_return[2], cls=NpEncoder)
+    # print(type(available_str))
+    # data_dict = json.dumps(data_dict, cls=NpEncoder)
+    return jsonify(data_dict)
 
-
-
+@app.route('/action2', methods=['POST'])  
+def getData2():
+    # parse json data from post request
+    data = request.get_json() 
+    # parse data from client
+    history_states = data["history_states"]
+    availables = data["availables"]
+    last_move = data["last_move"]
+    mode = data["mode"]
+    states_int = {}
+    for key in history_states:
+        states_int[int(key)] = history_states[key]
+    print("history_states", states_int)
+    print("availables", availables)
+    print("last_move", last_move)
+    print("mode", mode)
+    # get actions from Ai and update board
+    player = Game()
+    print("model2_path: ", model2_path)
+    data_return = player.start_play2(states_int, availables, last_move, mode,model2_path)
+    print(data_return, type(data_return))
+    print(data_return[4], type(data_return[4]))
+    # convert numpy int64 to int for stringfy
+    available_str = {}
+    for key in data_return[2]:
+        available_str[int(key)] = int(data_return[2][key])
+    # data to return to the client
+    data_dict = {   "x":              int(data_return[0]), 
+                    "y":              int(data_return[1]),
+                    "history_states": available_str, 
+                    "availables":     data_return[3], 
+                    "last_move":      int(data_return[4]), 
+                    "winner":         data_return[5]
+                }
+    print(data_dict)
+    # available_str = json.dumps(data_return[2], cls=NpEncoder)
+    # print(type(available_str))
+    # data_dict = json.dumps(data_dict, cls=NpEncoder)
+    return jsonify(data_dict)
 
 if __name__ == '__main__':
     app.run(**app_config)

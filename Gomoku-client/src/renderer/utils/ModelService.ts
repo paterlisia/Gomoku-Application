@@ -10,7 +10,7 @@ export default class ModelService {
       ...this.Config,
       ...{
         method: 'get',
-        url: 'http://localhost:5000/start',
+        url: 'http://localhost:5001/start',
         params,
       },
     };
@@ -24,7 +24,32 @@ export default class ModelService {
       ...this.Config,
       ...{
         method: 'post',
-        url: 'http://127.0.0.1:5000/action',
+        url: 'http://127.0.0.1:5001/action',
+        data,
+      },
+    };
+    return axios(config);
+  }
+  async getAction1(data = {}) {
+    console.log('Calling service for AI model actions');
+    const config = {
+      ...this.Config,
+      ...{
+        method: 'post',
+        url: 'http://127.0.0.1:5001/action1',
+        data,
+      },
+    };
+    return axios(config);
+  }
+
+  async getAction2(data = {}) {
+    console.log('Calling service for AI model actions2');
+    const config = {
+      ...this.Config,
+      ...{
+        method: 'post',
+        url: 'http://127.0.0.1:5001/action2',
         data,
       },
     };
@@ -38,7 +63,7 @@ export default class ModelService {
       ...this.Config,
       ...{
         method: 'post',
-        url: 'http://127.0.0.1:5000/upload',
+        url: 'http://127.0.0.1:5001/upload',
         data,
       },
     };
@@ -52,7 +77,7 @@ export default class ModelService {
       ...this.Config,
       ...{
         method: 'post',
-        url: 'http://127.0.0.1:5000/signup',
+        url: 'http://127.0.0.1:5001/signup',
         data,
       },
     };
@@ -66,7 +91,7 @@ export default class ModelService {
       ...this.Config,
       ...{
         method: 'post',
-        url: 'http://127.0.0.1:5000/upload',
+        url: 'http://127.0.0.1:5001/upload',
         data,
       },
     };

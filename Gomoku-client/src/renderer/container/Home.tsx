@@ -13,8 +13,8 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 // internal component
 
 import HumanPlay from '../feature/HumanPlay'; // human interaction with model in gomoku
-import UploadModel from '../feature/UploadModel'; // upload models
-import ModelCompete from '../feature/ModelCompete'; // model compete
+//import UploadModel from '../feature/UploadModel'; // upload models
+import ModelCompete from '../feature/ModelCompete1'; // model compete
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -29,9 +29,9 @@ export default function HomePage() {
   };
 
   const PageContent = () => {
-    if (phase === 0) {
-      return <UploadModel />;
-    }
+    // if (phase === 0) {
+    //   return <UploadModel />;
+    // }
     if (phase === 1) {
       return <ModelCompete />;
     }
@@ -43,14 +43,14 @@ export default function HomePage() {
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-          <Menu.Item
+          {/* <Menu.Item
             key="1"
             icon={<UserOutlined />}
             onClick={() => setPhase(0)}
           >
             Upload model
             <Link to="/" />
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item
             key="2"
             icon={<VideoCameraOutlined />}

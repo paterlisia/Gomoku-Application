@@ -55,3 +55,10 @@ sh start_backend.sh
 - __Alphago Zero__: _Silver, David, et al. "Mastering the game of go without human knowledge." nature 550.7676 (2017): 354-359._
 - __DeepMind published a new paper detailing MuZero, a new algorithm able to generalise on AlphaZero work, playing both Atari and board games without knowledge of the rules or representations of the game__: _Schrittwieser, Julian, et al. "Mastering atari, go, chess and shogi by planning with a learned model." Nature 588.7839 (2020): 604-609._
 - __Comparision with other Monte Carlo tree search searches and training__: _Silver, David, et al. "Mastering chess and shogi by self-play with a general reinforcement learning algorithm." arXiv preprint arXiv:1712.01815 (2017)._
+
+## Demo video
+
+
+https://user-images.githubusercontent.com/41310207/167341345-27415299-a1c9-4991-85a6-9218da788f26.mp4
+
+

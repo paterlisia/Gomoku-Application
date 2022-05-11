@@ -5,7 +5,12 @@ import ReactDOM from "react-dom";
 // ReactDOM.render(<Game />, document.getElementById("root"));
 
 // function to judege if wins
-export function calculateWinner(y: number, x: number, arr, chessColor) {
+export function calculateWinner(y: number, x: number, arr: any[][], chessColor: any) {
+  console.log("I am in winner calculator");
+  console.log('color is', chessColor);
+  console.log('y is', y);
+  console.log('x is', x);
+  console.log('arr is', arr);
   let n1 = 0;
   let n2 = 0;
   let n3 = 0;
@@ -73,7 +78,10 @@ export function calculateWinner(y: number, x: number, arr, chessColor) {
     }
     n4++;
   }
-
+  console.log("n1 is", n1);
+  console.log("n2 is", n2);
+  console.log("n3 is", n3);
+  console.log("n4 is", n4);
   if (n1 >= 4 || n2 >= 4 || n3 >= 4 || n4 >= 4) {
     return chessColor;
   }
