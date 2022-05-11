@@ -3,7 +3,6 @@
 An implementation of the policyValueNet with Keras
 Tested under Keras 2.0.5 with tensorflow-gpu 1.2.1 as backend
 
-@author: Mingxu Zhang
 """ 
 
 from __future__ import print_function
