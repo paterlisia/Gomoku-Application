@@ -1,6 +1,6 @@
 # EECE E6892-final-project Gomoku application based on AlphaZero
 Final Project of EECE E6892@Columbia University  
-author: Xiaotian Geng, Jing Peng
+author: [Xiaotian Geng](https://github.com/wwetnaroh), [Jing Peng](https://github.com/paterlisia)
 
 ## Brief introduction of our project
 Our project will implement `AlphaZero algorithm` in playing a board game Gomoku. Furthermore, we will explore the influence of different factors like numbers of training iterations, model architecture, numbers of simulated games and calculation of Upper Confidence Bound(UCB) have on our trained AI model. And we will realize this by comparing the winnining percentage by changing different factors.
