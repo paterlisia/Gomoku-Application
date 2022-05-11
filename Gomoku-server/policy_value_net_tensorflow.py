@@ -3,7 +3,6 @@
 An implementation of the policyValueNet in Tensorflow
 Tested in Tensorflow 1.4 and 1.5
 
-@author: Xiang Zhong
 """
 
 import numpy as np
